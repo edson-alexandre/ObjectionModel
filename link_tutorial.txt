@@ -1,0 +1,4 @@
+https://dev.to/mrscx/a-definitive-guide-to-sql-in-nodejs-with-objection-js-knex-part-1-4c2e
+
+
+https://github.com/MrScX/knex_objection_crud_example

@@ -8,8 +8,8 @@ module.exports = app => {
     const xml = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://services.senior.com.br">
               <soapenv:Body>
                 <ser:obterCliente>
-                  <user>edson</user>
-                  <password>silveira123</password>
+                  <user>usuario</user>
+                  <password>senha</password>
                   <encryption>0</encryption>
                   <parameters>
                     <codigoEmpresa>1</codigoEmpresa>

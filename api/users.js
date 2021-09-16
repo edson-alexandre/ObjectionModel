@@ -4,21 +4,10 @@ const multer  = require('multer')
 require('express-zip');
 
 module.exports = app => {
-    const storage = multer.diskStorage({
-        destination: (req,file,cb) => {
-            const id = req.params.id
-            const path = `${__dirname}/../user/${id}`
-            if(!fs.existsSync(path)) fs.mkdirSync(path)
-            cb(null,path)
-        },
-        filename: (req, file,cb) => {
-            cb(null,file.originalname)
-        }
-    })
-    const userFiles = multer({ storage })
     const getAll = async (req,res)=> {
         User.query().withGraphFetched('Role')
-        .then(users => res.status(200).json(users))   
+        .orderBy('id')
+        .then(users => res.status(200).json(users))           
         //.catch(error => res.status(500).send(error)) 
     }
     
@@ -45,13 +34,28 @@ module.exports = app => {
         .catch(error => res.status(500).json(error))
     }
 
+    
+    //File operations
+    const storage = multer.diskStorage({
+        destination: (req,file,cb) => {
+            const id = req.params.id
+            const path = `${__dirname}/../filesStorage/user/${id}`
+            if(!fs.existsSync(path)) fs.mkdirSync(path)
+            cb(null,path)
+        },
+        filename: (req, file,cb) => {
+            cb(null,file.originalname)
+        }
+    })
+    const userFiles = multer({ storage })
+    
     const saveFiles = (req, res ) => {
         res.status(200).send('arquivo salvo com sucesso')        
     }
 
     const getFiles = (req,res) => {
         const id = req.params.id
-        const path = `${__dirname}/../user/${id}`
+        const path = `${__dirname}/../filesStorage/user/${id}`
         fs.readdir(path,(err, files) => {
             const fileZip = []            
             files.forEach(file => {
@@ -65,16 +69,25 @@ module.exports = app => {
     const getFileByName = (req, res) => {
         const id = req.params.id
         const fileName = req.query.fileName
-        const userPath = `${__dirname}/../user/${id}/${fileName}`
+        const userPath = `${__dirname}/../filesStorage/user/${id}/${fileName}`
         const path = require('path')
         res.download(path.resolve(userPath))  
     }
 
     const getFileNames = (req, res) => {
         const id = req.params.id
-        const path = `${__dirname}/../user/${id}`
+        const path = `${__dirname}/../filesStorage/user/${id}`
         fs.readdir(path,(err,files) => {
             res.status(200).json(files)
+        })
+    }
+
+    const deleteFile = (req, res ) => {
+        const id = req.params.id
+        const fileName = req.query.fileName
+        const userPath = `${__dirname}/../filesStorage/user/${id}/${fileName}`
+        fs.unlink(userPath,(err) => {
+            res.status(200).send('Arquivo deletado com sucesso!')
         })
     }
 
@@ -86,6 +99,7 @@ module.exports = app => {
              saveFiles, 
              getFiles,
              getFileNames,
-             getFileByName
+             getFileByName,
+             deleteFile
             }
 }

@@ -3,6 +3,10 @@ module.exports = app => {
     app.route('/roles')
         .get(app.api.roles.getAll)    
         .post(app.api.roles.insert)
+
+
+    app.route('/soap')
+        .get(app.api.soap.testSoap) 
     
     app.route('/roles/:id')        
         .put(app.api.roles.update)
@@ -28,5 +32,6 @@ module.exports = app => {
     
     app.route('/userfile/:id')    
     .get(app.api.users.getFileByName)
+    .delete(app.api.users.deleteFile)
 
 }    
